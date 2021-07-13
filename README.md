@@ -1,8 +1,8 @@
 # coarsening-disassortative-graphs
 
-###Pooling operators available in torch-geometric
+### Pooling operators available in torch-geometric
 
-####Sparse
+#### Sparse
 * TopKPooling - from the “Graph U-Nets”, “Towards Sparse Hierarchical Graph Classifiers” and “Understanding Attention and Generalization in Graph Neural Networks” papers.
 
 * SAGPooling - The self-attention pooling operator from the “Self-Attention Graph Pooling” and “Understanding Attention and Generalization in Graph Neural Networks” papers.
@@ -15,7 +15,7 @@
 
 
 
-####Dense
+#### Dense
 * dense_diff_pool - Differentiable pooling operator from the “Hierarchical Graph Representation Learning with Differentiable Pooling” paper
 
 * dense_mincut_pool - MinCUt pooling operator from the “Mincut Pooling in Graph Neural Networks” paper
