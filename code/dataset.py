@@ -4,7 +4,7 @@ import networkx as nx
 import torch
 import torch_geometric as tg
 import torch_geometric.transforms as T
-from torch_geometric.datasets import WikiCS, WebKB, Actor, WikipediaNetwork, DeezerEurope, Twitch
+from torch_geometric.datasets import WikiCS, WebKB, Actor, WikipediaNetwork, DeezerEurope, Twitch, Planetoid
 
 
 def read_graphs(data_name, dir):
@@ -73,7 +73,9 @@ def load_TUDDataset(data_name):
 
 
 def load_pyg_dataset(
-        data_name: str, quiet: bool = False, device='cpu'
+        data_name: str, quiet: bool = False,
+        to_sparse: bool = False,
+        device='cpu'
 ):
     path = '../datasets/PyG_data/' + data_name + '/'
     if data_name in ['WikiCS']:
@@ -91,10 +93,16 @@ def load_pyg_dataset(
     elif 'Twitch' in data_name:
         path = '../datasets/PyG_data/' + data_name.split('-')[0] + '/'
         data = Twitch(path, name=data_name.split('-')[1], transform=T.NormalizeFeatures()).data
+    elif data_name in ['Cora', 'Pubmed', 'Citeseer']:
+        data = Planetoid(path, data_name, transform=T.NormalizeFeatures()).data
     else:
         data = None
         print('Wrong data name!')
         pass
+
+    if to_sparse:
+        to_sparse = T.ToSparseTensor(remove_edge_index=False)
+        data = to_sparse(data)
 
     data.num_classes = data.y.unique().shape[0]
     data = data.to(device)
