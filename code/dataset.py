@@ -3,6 +3,8 @@ import networkx as nx
 
 import torch
 import torch_geometric as tg
+import torch_geometric.transforms as T
+from torch_geometric.datasets import WikiCS, WebKB, Actor, WikipediaNetwork, DeezerEurope, Twitch
 
 
 def read_graphs(data_name, dir):
@@ -68,3 +70,35 @@ def load_TUDDataset(data_name):
         data.g_y = torch.LongTensor(g_y)
         data_list.append(data)
     return data_list
+
+
+def load_pyg_dataset(
+        data_name: str, quiet: bool = False, device='cpu'
+):
+    path = '../datasets/PyG_data/' + data_name + '/'
+    if data_name in ['WikiCS']:
+        data = WikiCS(path).data
+    elif data_name in ["Cornell", "Texas", "Wisconsin"]:
+        data = WebKB(path, data_name).data
+        data.y = data.y.long()
+    elif data_name in ["Chameleon", "Squirrel", "Crocodile"]:
+        data = WikipediaNetwork(path, data_name.lower()).data
+        data.y = data.y.long()
+    elif data_name in ['Actor']:
+        data = Actor(path, transform=T.NormalizeFeatures()).data
+    elif data_name in ['DeezerEurope']:
+        data = DeezerEurope(path, transform=T.NormalizeFeatures()).data
+    elif 'Twitch' in data_name:
+        path = '../datasets/PyG_data/' + data_name.split('-')[0] + '/'
+        data = Twitch(path, name=data_name.split('-')[1], transform=T.NormalizeFeatures()).data
+    else:
+        data = None
+        print('Wrong data name!')
+        pass
+
+    data.num_classes = data.y.unique().shape[0]
+    data = data.to(device)
+    if not quiet:
+        print('The obtained data {} has {} nodes, {} edges, {} features, {} labels, '.
+              format(data_name, data.num_nodes, data.num_edges, data.num_features, data.num_classes))
+    return data

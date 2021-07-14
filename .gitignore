@@ -1,3 +1,4 @@
 .idea/*
 code/.ipynb_checkpoints/*
 code/__pycache__/*
+datasets/PyG_data/*
