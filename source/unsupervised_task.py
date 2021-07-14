@@ -202,7 +202,8 @@ for epoch in range(1, 151):
 
 
 
-
+import os
+os.system('rm -r ../datasets/'+ dataset_name + '/processed')
 
 
 
